@@ -1,0 +1,51 @@
+/* cleared floats - instead of clea:both class, used on containing div */
+.dropdown_group:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+.dropdown_group {  zoom: 1; display: block;  }  
+
+
+/* -- Default Dropdown Menu Settings -------------------------------------------------------- */
+.dropdown_group dl, 
+.dropdown { position:relative; z-index:auto; float:left; font-size:14px;}
+
+.dropdown_group dt, 
+.dropdown dt, { display:block; cursor:default; padding:5px 10px; 
+		background:#ddd; border:1px solid; border-color:#fff #888 #888 #fff; }
+
+.dropdown_group dt a:hover,
+.dropdown dt a:hover { text-decoration:none; }
+
+.dropdown_group dd, 
+.dropdown dd { display:none; position:absolute; left:0; top:45px; z-index:2000; 
+	border: 3px solid #fff; background:#F1F5F8; background: rgba(241, 243, 248, 0.95); 
+}
+
+.linklist { min-width:150px; 
+    a,
+    label,
+    span { display:block; padding:6px 10px;  }
+
+    .locked:hover { background:none !important; }
+}
+
+dd .first { border-top:3px solid #aaa; }
+dd .last { border-bottom:3px solid #aaa; }
+
+
+/* -- Hover States -- */
+.dropdown_group dd a, 
+.dropdown dd a, 
+.dropdown_group .nestedmenu a, 
+.dropdown .nestedmenu a {
+     &:hover { background-color: #ffffe0; text-decoration:none;  }
+ }
+
+.dropdown_group dd .on, 
+dl.dropdown dd .on { background-color:transparent !important; color:inherit !important; }
+
+
+.nestedlinks { position:relative; background-color:#fff; margin:0 10px 11px 8px; max-height:200px; overflow:auto;
+    border:solid #ccc; border-width:1px;
+    a { padding:4px 10px 4px 20px; border:0; border-top:1px solid #eee; overflow:hidden; }
+    a:hover { background-color:#f9f9f9; }
+}
+
