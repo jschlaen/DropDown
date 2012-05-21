@@ -1,16 +1,24 @@
+//////////////////////////////////////////////////////
+//// 
+////  $().dropDown();
+////   author: Kirin Murphy, www.codethings.net 
+////   
+//////////////////////////////////////////////////////
+
 (function($) {
 
     $.fn.dropDown = function(options) {
 
         var settings = {
-            'trigger': 'mousedown',
-			'dropdownClass':'.dropdown',
-			'dropdownGroupClass' : '.dropdown_group',
-            'displayType': 'show',  /* show or fadeIn */
-			'fitToScreen': true,  // if true, shrinks to avaialbe height and adds scrollbars
-            'fadeInSpeed': 40,
-            'fadeOutSpeed': 40,
-			'spaceFromDropdownToTrigger':0 // additional px spacing between elements
+            trigger: 'click',						// click or mouseenter
+			selector_dropdownGroup : '.dropdownGroup',		// group of dropdowns that have hover 
+            displayType: 'show',  						// show or fadeIn 
+			fitToScreen: true,  						// if true, shrinks to avaialbe height and adds scrollbars
+			spaceFromDropdownToTrigger:5,				// additional px spacing between elements
+            fadeInSpeed: 40,
+            fadeOutSpeed: 40,
+            
+            gutter_leftRight: 5
         }
 
         return this.each(function() {
@@ -27,7 +35,7 @@
                 var windowHeight = $(window).height();
 
                 // determine if position should be above or below
-                var setBelow = (windowHeight * .75 > dropDownOffset) ? true : false;
+                var setBelow = (windowHeight * .70 > dropDownOffset) ? true : false;
                 var topPositioning = (setBelow === true) ? dropDownTriggerHeight + settings.spaceFromDropdownToTrigger : 'auto';
                 var bottomPositioning = (setBelow === true) ? 'auto' : dropDownTriggerHeight + settings.spaceFromDropdownToTrigger;
                 $dropDownWindow.css({ 'top': topPositioning, 'bottom': bottomPositioning });				
@@ -39,13 +47,42 @@
 	                var maxHeight = (setBelow === true) ? belowMaxHeight : aboveMaxHeight;
 	                $dropDownWindow.css({ 'overflow': 'auto', 'max-height': maxHeight });
 				}
+				
+				// -- Left Right Rules ------------------------------------------ //
+			
+			    // we have to show but not show bc offset works differently.  
+				$dropDownWindow.css('visibility','hidden').show();
+
+                // LR Stuff
+                var leftOffset = $dropDownWindow.offset().left;
+                
+                if ( leftOffset < settings.gutter_leftRight ) { 
+                    var leftCSS = $dropDownWindow.css('left').replace('px','');
+                    if ( leftCSS !== 'auto' ) {
+                        var adjustedMargin = settings.gutter_leftRight - leftOffset;
+                        $dropDownWindow.css('margin-left',adjustedMargin);                        
+                    }
+                }
+                
+                var rightOffset = leftOffset + $dropDownWindow.outerWidth(true); 
+                var dropDownWindowWidth = $dropDownWindow.width();
+                var windowWidth = $(window).width();
+
+                if ( rightOffset > windowWidth - settings.gutter_leftRight ) {
+                    var rightCSS = $dropDownWindow.css('right').replace('px','');
+                    if ( rightCSS !== 'auto' ) {
+                        var adjustedMargin = settings.gutter_leftRight - ( windowWidth - rightOffset);
+                        $dropDownWindow.css('margin-right', adjustedMargin);
+                    }
+                }
 
                 $dropDown.addClass('on')
-                $dropDownWindow.stop(true, true).show();
+                $dropDownWindow.stop(true, true).css('visibility','visible');
             }
 
             var closeOpenDD = function() { //hide other menus
-                $('dl.on').removeClass('on').find('dd').hide(); 
+                // @fix - scope this to only dropdown dl's
+				$('dl.on').removeClass('on').find('dd').hide(); 
             }
 
             var deactivateDD = function() {  // hide current menu
@@ -68,11 +105,11 @@
                 }
             });
 
-            // hover over trigger, if within a parentDropDownGroup  becomes mousedown instead of mouseover 
+            // hover over trigger, if within a parentDropDownGroup  becomes click instead of mouseover 
             $dropDownTrigger.mouseenter(function() {
                 var $this = $(this);
 
-				var $parentDropDownGroup = $this.closest(settings.dropdownGroupClass);
+				var $parentDropDownGroup = $this.closest(settings.selector_dropdownGroup);
                 if ( $parentDropDownGroup.length > 0 && $parentDropDownGroup.find('dl.on').length > 0
 					&& !$this.closest('dl').hasClass('on') && !$this.closest('dl').hasClass('disabled')) {
 						closeOpenDD();  
@@ -94,5 +131,5 @@
 })(jQuery);
 
 $(document).ready(function(){
-	$('.dropdown_group dl, .dropdown').dropDown();
+	$('.dropdownGroup dl, .dropdown').dropDown();
 });
